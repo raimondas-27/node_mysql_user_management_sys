@@ -45,11 +45,12 @@ pool.getConnection((err, connection) => {
    console.log("connected", + connection.threadId);
  })
 
+const routes = require("./server/routes/user");
+app.use("/", routes);
+
 //navigation
 
-app.get("", (req, res) => {
-   res.render("home");
-})
+
 
 
 app.listen(PORT, () => {
