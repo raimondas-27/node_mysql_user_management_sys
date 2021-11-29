@@ -2,6 +2,7 @@ const express = require('express');
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
+const path = require("path");
 
 require("dotenv").config();
 
@@ -23,6 +24,7 @@ app.use(express.static("public"));
 //template engine
 
 app.engine("hbs", exphbs({extname : ".hbs"}));
+
 app.set("view engine", "hbs");
 
 

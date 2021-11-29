@@ -36,12 +36,13 @@ exports.find = (req, res) => {
       if (err) {
          throw err;
       }
-      console.log("connected", +connection.threadId);
+      console.log("connected", + connection.threadId);
 
       let searchTerm = req.body.search;
       console.log(searchTerm)
 
-   connection.query('SELECT * FROM user WHERE first_name LIKE ?',["%" + searchTerm + "%"], (err, rows) => {
+   connection.query('SELECT * FROM user WHERE first_name LIKE ? or last_name LIKE  ?',["%" + searchTerm + "%", "%" + searchTerm + "%"],
+       (err, rows) => {
       //when done with the connection, release it
       connection.release();
       if (!err) {
@@ -54,6 +55,12 @@ exports.find = (req, res) => {
       console.log("the data from user table : \n", rows);
    });
 });
+}
+
+//add new user
+
+exports.form = (req, res) => {
+   res.render("add-user");
 }
 
 //connect to db
