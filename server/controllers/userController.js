@@ -36,31 +36,51 @@ exports.find = (req, res) => {
       if (err) {
          throw err;
       }
-      console.log("connected", + connection.threadId);
+      console.log("connected", +connection.threadId);
 
       let searchTerm = req.body.search;
       console.log(searchTerm)
 
-   connection.query('SELECT * FROM user WHERE first_name LIKE ? or last_name LIKE  ?',["%" + searchTerm + "%", "%" + searchTerm + "%"],
-       (err, rows) => {
-      //when done with the connection, release it
-      connection.release();
-      if (!err) {
-         res.render("home", {
-            rows
-         });
-      } else {
-         console.log("error with a page", err);
-      }
-      console.log("the data from user table : \n", rows);
+      connection.query('SELECT * FROM user WHERE first_name LIKE ? or last_name LIKE  ?', ["%" + searchTerm + "%", "%" + searchTerm + "%"],
+          (err, rows) => {
+             //when done with the connection, release it
+             connection.release();
+             if (!err) {
+                res.render("home", {
+                   rows
+                });
+             } else {
+                console.log("error with a page", err);
+             }
+             console.log("the data from user table : \n", rows);
+          });
    });
-});
+}
+
+exports.form = (req, res) => {
+   res.render('add-user');
 }
 
 //add new user
 
-exports.form = (req, res) => {
-   res.render("add-user");
+exports.create = (req, res) => {
+   const {first_name, last_name, email, phone, comments} = req.body;
+   let searchTerm = req.body.search;
+
+   pool.getConnection((err, connection) => {
+      if (err) {
+         throw err;
+      }
+      console.log("connected", +connection.threadId);
+      connection.query('INSERT INTO user SET first_name = ?, last_name = ?, email = ?, phone = ?, comments = ?', [first_name, last_name, email, phone, comments], (err, rows) => {
+         if (!err) {
+            res.render('add-user', {alert: 'User added successfully.'});
+         } else {
+            console.log(err);
+         }
+         console.log('The data from user table: \n', rows);
+      });
+   });
 }
 
 //connect to db

@@ -9,6 +9,7 @@ router.get("/", userController.view);
 router.post("/", userController.find);
 
 router.get("/adduser", userController.form);
+router.post("/adduser", userController.create);
 
 
 
