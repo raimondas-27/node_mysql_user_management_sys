@@ -83,6 +83,10 @@ exports.create = (req, res) => {
    });
 }
 
+exports.edit = (req, res) => {
+   res.render("edit-user");
+}
+
 //connect to db
 
 
