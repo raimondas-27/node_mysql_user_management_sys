@@ -25,7 +25,7 @@ exports.view = (req, res) => {
          } else {
             console.log("error with a page", err);
          }
-         console.log("the data from user table : \n", rows);
+         // console.log("the data from user table : \n", rows);
       });
    });
 }
@@ -112,39 +112,62 @@ exports.update = (req, res) => {
          throw err;
       }
       console.log("connected", +connection.threadId);
-      connection.query('update user set first_name = ?, last_name = ? where id = ?', [first_name, last_name, req.params.id], (err, rows) => {
-         //when done with the connection, release it
-         connection.release();
-         if (!err) {
-            pool.getConnection((err, connection) => {
-               if (err) {
-                  throw err;
-               }
-               console.log("connected", +connection.threadId);
-               connection.query('SELECT * FROM user WHERE id = ?', [req.params.id], (err, rows) => {
-                  //when done with the connection, release it
-                  connection.release();
-                  if (!err) {
-                     res.render("edit-user", {rows, alert: `${first_name} has been updated`});
-                     res.redirect("/")
-                  } else {
-                     console.log("error with a page", err);
-                  }
-                  console.log("the data from user table : \n", rows);
-               });
-            })
-         } else
-            {
-               console.log("error with a page", err);
-            }
-            console.log("the data from user table : \n", rows);
-         }
+      connection.query('update user set first_name = ?, last_name = ?, email = ?, phone = ?, comments = ?, where id = ?',
+          [first_name, last_name, email, phone, comments, req.params.id], (err, rows) => {
+             //when done with the connection, release it
+             connection.release();
+             if (!err) {
+                pool.getConnection((err, connection) => {
+                   if (err) {
+                      throw err;
+                   }
+                   console.log("connected", +connection.threadId);
+                   connection.query('SELECT * FROM user WHERE id = ?', [req.params.id], (err, rows) => {
+                      //when done with the connection, release it
+                      connection.release();
+                      if (!err) {
+                         res.render("edit-user", {rows, alert: `${first_name} has been updated`});
+                         res.redirect("/")
+                      } else {
+                         console.log("error with a page", err);
+                      }
+                      console.log("the data from user table : \n", rows);
+                   });
+                })
+             } else {
+                console.log("error with a page", err);
+             }
+             console.log("the data from user table : \n", rows);
+          }
       )
-         ;
-      });
-   }
+      ;
+   });
+}
 
+//delete user
+exports.delete = (req, res) => {
+   pool.getConnection((err, connection) => {
+      if (err) {
+         throw err;
+      }
+      console.log("connected", +connection.threadId);
 
-//connect to db
+      let searchTerm = req.body.search;
+      console.log(searchTerm)
+
+      connection.query('DELETE FROM user WHERE id = ?',[req.params.id],
+          (err, rows) => {
+             //when done with the connection, release it
+             connection.release();
+             if (!err) {
+                res.redirect("/")
+             } else {
+                console.log("error with a page", err);
+             }
+             console.log("the data from user table : \n", rows);
+          });
+   });
+}
+
 
 
