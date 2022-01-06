@@ -112,7 +112,7 @@ exports.update = (req, res) => {
          throw err;
       }
       console.log("connected", +connection.threadId);
-      connection.query('update user set first_name = ?, last_name = ?, email = ?, phone = ?, comments = ?, where id = ?',
+      connection.query('UPDATE user SET first_name = ?, last_name = ?, email = ?, phone = ?, comments = ?, where id = ?',
           [first_name, last_name, email, phone, comments, req.params.id], (err, rows) => {
              //when done with the connection, release it
              connection.release();
@@ -144,6 +144,7 @@ exports.update = (req, res) => {
    });
 }
 
+
 //delete user
 exports.delete = (req, res) => {
    pool.getConnection((err, connection) => {
@@ -155,7 +156,7 @@ exports.delete = (req, res) => {
       let searchTerm = req.body.search;
       console.log(searchTerm)
 
-      connection.query('DELETE FROM user WHERE id = ?',[req.params.id],
+      connection.query('DELETE FROM user WHERE id = ?', [req.params.id],
           (err, rows) => {
              //when done with the connection, release it
              connection.release();
@@ -169,5 +170,25 @@ exports.delete = (req, res) => {
    });
 }
 
+exports.viewAll = (req, res) => {
+   pool.getConnection((err, connection) => {
+      if (err) {
+         throw err;
+      }
+      console.log("connected", +connection.threadId);
+      connection.query('SELECT * FROM user WHERE id = ?', [req.params.id], (err, rows) => {
+         //when done with the connection, release it
+         connection.release();
+         if (!err) {
+            res.render("view-user", {
+               rows
+            });
+         } else {
+            console.log("error with a page", err);
+         }
+         // console.log("the data from user table : \n", rows);
+      });
+   });
+}
 
 
